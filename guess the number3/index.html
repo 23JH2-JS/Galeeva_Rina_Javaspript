@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>How to guess a number from 0 to 100</title>
+
+    <style type="text/css">
+        /* Set common parameters for the entire page: font and margins */
+        body {
+          text-align: center;
+          margin: 10;
+          font-family: Verdana, Arial, sans-serif;
+          font-size: 16px;
+        }
+
+        /* Button appearance */
+        button{
+          font-family: Verdana, Arial, sans-serif;
+          font-size: 16px;
+          margin: 10px;
+          padding: 10px;
+        }
+
+        /* Hide elements */
+        .notOnScreen{
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+
+    <!-- This will disappear after clicking the button -->
+    <p id="startText">Think of an integer from 0 to 100, and I'll guess it in 7 attempts or fewer!</p>
+    <!-- The button itself will also disappear -->
+    <button onclick="start()" id="startButton">Let's start!</button>
+
+    <!-- Here we will ask our questions -->
+    <p id="question"></p>
+    <br>
+    <!-- These buttons will be used to respond to the computer's guesses -->
+    <button id="small" onclick="smallClick()" class="notOnScreen">Smaller</button>
+    <button id="bingo" onclick="bingoClick()" class="notOnScreen">Got it!</button>
+    <button id="big" onclick="bigClick()" class="notOnScreen">Bigger</button>
+
+
+    <!-- Our script -->
+    <script>
+        // The boundaries within which we guess the number
+        var min = 0;
+        var max = 100;
+
+        // The middle of the range
+        var middle = Math.floor((min + max)/2);
+
+        // Number of attempts
+        var stage = 1;
+
+        // Handling the start button click
+        function start() {
+            // Hide the welcome message and the button
+            document.getElementById("startText").classList.add("notOnScreen");
+            document.getElementById("startButton").classList.add("notOnScreen");
+
+            // Show the text with the first attempt
+            document.getElementById("question").classList.remove("notOnScreen");
+            document.getElementById("question").innerHTML = "Attempt " + stage + ": " + middle;
+
+            // Show the three game buttons
+            document.getElementById("small").classList.remove("notOnScreen");
+            document.getElementById("bingo").classList.remove("notOnScreen");
+            document.getElementById("big").classList.remove("notOnScreen");
+        }
+
+        // If the guessed number is smaller than the displayed one
+        function smallClick() {
+            // Reduce the range
+            max = middle;
+
+            // Find the new middle of the range
+            middle = Math.floor((min + max)/2);
+
+            // If rounding the middle coincided with the current upper boundary, decrease it by one
+            if (max == middle) {
+                middle -= 1;
+            }
+
+            // Check the result
+            checkGame();
+        }
+
+        // If the guessed number is larger than the displayed one
+        function bigClick() {
+            // Reduce the range
+            min = middle;
+
+            // Find the new middle of the range
+            middle = Math.floor((min + max)/2);
+
+            // If rounding the middle coincided with the current lower boundary, increase it by one
+            if (min == middle) {
+                middle += 1;
+            }
+
+            // Check the result
+            checkGame();
+        }
+
+        // If we guessed the number
+        function bingoClick() {
+            // Reduce the range to one number
+            max = middle;
+            min = middle;
+
+            // Check the result
+            checkGame();
+        }
+        
+        // Check if the game is won or not
+        function checkGame() {
+            // If there's only one number left in the range, announce it
+            if (min == max){
+                document.getElementById("question").innerHTML = "You've guessed the number " + min;
+                // Hide the buttons
+                document.getElementById("small").classList.add("notOnScreen");
+                document.getElementById("bingo").classList.add("notOnScreen");
+                document.getElementById("big").classList.add("notOnScreen");
+
+                // Game over
+                return;
+            }
+
+            // Increase the attempt counter
+            stage += 1;
+            if (stage == 8){
+                // Show an error message
+                document.getElementById("question").innerHTML = "Cheating is not nice!";
+            }
+
+            // Display the new guess on the screen
+            document.getElementById("question").innerHTML = "Attempt " + stage + ": " + middle;
+        }
+    </script>
+
+</body>
+</html>
